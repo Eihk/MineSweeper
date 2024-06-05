@@ -11,11 +11,18 @@ enum class ECellType{
     ECT_Bomb,
 };
 
+enum class ECellState{
+    ECS_Unflipped,
+    ECS_Flipped,
+};
+
 class Cell: public Button{
 
 public:
     Cell();
     Cell(const SDL_Rect& rect);
+
+    void FlipCell();
 
     static SDL_Color BaseColor;
     static SDL_Color PressedColor;
@@ -27,8 +34,8 @@ public:
 
 private:
     ECellType CellType;
-
-protected:
-
-
+    ECellState CellState = ECellState::ECS_Unflipped;
+    
+public:
+    inline ECellState GetCellState() const {return CellState;}
 };

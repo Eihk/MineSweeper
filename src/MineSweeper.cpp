@@ -70,18 +70,22 @@ void MineSweeper::BoardScreen(){
     SDL_SetWindowPosition(_Window, SDL_WINDOWPOS_UNDEFINED,
     SDL_WINDOWPOS_UNDEFINED);
 
-    auto HandleDifficulty = [&](const GameDifficulty& Difficulty){
-        _GameDifficulty = Difficulty;
-        GameState = EGameState::EGS_Board;
+    auto HandleClick = [&](Cell& _Cell){
+        if(_Cell.GetCellState() == ECellState::ECS_Unflipped){
+            _Cell.FlipCell();
+            _Cell.Render(_Renderer);
+        }
     };
 
-
-    while (GameState == EGameState::EGS_Board){
+    while(GameState == EGameState::EGS_Board){
 		SDL_Event event;
 		while (SDL_PollEvent(&event)){
 			if (event.type == SDL_QUIT){
 				GameState = EGameState::EGS_Exit;
 			}
+            if(event.type == SDL_MOUSEBUTTONDOWN){
+                _Board.HandleMouseClick(event, HandleClick);
+            }
 			if (event.type == SDL_WINDOWEVENT
 				&& event.window.event == SDL_WINDOWEVENT_CLOSE
 				&& event.window.windowID == SDL_GetWindowID(_Window)){

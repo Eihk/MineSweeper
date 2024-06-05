@@ -54,6 +54,32 @@ void Board::RenderBoard(SDL_Renderer* renderer){
     }
 }
 
+void Board::HandleMouseClick(const SDL_Event& event, const std::function<void(Cell&)>& HandleCell){
+    int xMouse, yMouse;
+    SDL_GetMouseState(&xMouse, &yMouse);
+
+    int yHud = 120;
+    int xCell = CellGap;
+    int yCell = yHud + CellGap;
+    for (int row = 0; row < _Rows; row++){
+        for (int col = 0; col < _Cols; col++){
+            if(_Map[GetIndex(row, col)].IsMouseInside(xMouse, yMouse)){
+                HandleCell(_Map[GetIndex(row, col)]);
+            }
+            xCell += CellSize + CellGap;
+        }
+        xCell = CellGap;
+        yCell += CellSize + CellGap; 
+    }
+}
+
+void Board::GenerateBomb(){
+    //_Bombs // Number of bomb
+    const int NumberOfCells = _Rows * _Cols;
+    
+
+}
+
 Board::~Board(){
     delete[] _Map;
 }

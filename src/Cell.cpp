@@ -14,3 +14,8 @@ SDL_Texture* Cell::BombTexture = nullptr;
 
 Cell::Cell() : Button(){}
 Cell::Cell(const SDL_Rect& rect) : Button(rect, BaseColor){}
+
+void Cell::FlipCell(){
+    CellState = ECellState::ECS_Flipped;
+    ChangeColorTo(PressedColor);
+}
