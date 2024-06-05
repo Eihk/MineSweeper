@@ -16,10 +16,11 @@ void Menu::InitButton(SDL_Renderer* Renderer){
     const int HorizontalGap = 2;
     const int ButtonWidth = 200;
     const int ButtonHeight = 50;
-    const SDL_Color EasyButtonColor = {114, 255, 110, 255};
+    const SDL_Color EasyButtonColor = {114, 200, 110, 255};
     const SDL_Color MediumButtonColor = {255, 166, 100, 255};
     const SDL_Color ExpertButtonColor = {255, 50, 50};
     const SDL_Color ColorList[3] = {EasyButtonColor, MediumButtonColor, ExpertButtonColor};
+    const SDL_Color ButtonColor = {114, 166, 176, 255};
 
     int xButton = HorizontalGap;
     int yButton = VerticalGap;

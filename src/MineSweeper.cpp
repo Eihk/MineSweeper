@@ -1,5 +1,4 @@
 #include "MineSweeper.h"
-#include "Board.h"
 
 MineSweeper::MineSweeper() : _Window(nullptr), _Renderer(nullptr), GameState(EGameState::EGS_Menu),
     _GameDifficulty({0, 0, 0}){
@@ -9,22 +8,21 @@ MineSweeper::MineSweeper() : _Window(nullptr), _Renderer(nullptr), GameState(EGa
         << SDL_GetError() << std::endl;
 	}
 
-    // if (TTF_Init() != 0){
-	// 	std::cout << "SDL_TTF could not initialise! SDL_Error: "
-    //     << SDL_GetError() << std::endl;
-	// }
+    if (TTF_Init() < 0) {
+        std::cout << "SDL_ttf could not initialise! Error: " << TTF_GetError() << std::endl;
+    }
 
     /* Initialize Window and Renderer */
-    _Window = SDL_CreateWindow("MineSweeper", SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED, MenuScreenWidth, MenuScreenHeight,
+    _Window = SDL_CreateWindow("MineSweeper", SDL_WINDOWPOS_CENTERED,
+    SDL_WINDOWPOS_CENTERED, MenuScreenWidth, MenuScreenHeight,
     SDL_WINDOW_SHOWN);
     _Renderer = SDL_CreateRenderer(_Window, -1, SDL_RENDERER_SOFTWARE);
 }
 
 void MineSweeper::MenuScreen(){
     SDL_SetWindowSize(_Window, MenuScreenWidth, MenuScreenHeight);
-    SDL_SetWindowPosition(_Window, SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED);
+    SDL_SetWindowPosition(_Window, SDL_WINDOWPOS_CENTERED,
+    SDL_WINDOWPOS_CENTERED);
 
     Menu _Menu = Menu(_Renderer, MenuScreenWidth, MenuScreenHeight);
 
@@ -67,8 +65,8 @@ void MineSweeper::BoardScreen(){
     Board _Board = Board(_Renderer, _GameDifficulty);
 
     SDL_SetWindowSize(_Window, BoardScreenWidth, BoardScreenHeight);
-    SDL_SetWindowPosition(_Window, SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED);
+    SDL_SetWindowPosition(_Window, SDL_WINDOWPOS_CENTERED,
+    SDL_WINDOWPOS_CENTERED);
 
     auto HandleClick = [&](Cell& _Cell){
         if(_Cell.GetCellState() == ECellState::ECS_Unflipped){
@@ -95,6 +93,8 @@ void MineSweeper::BoardScreen(){
 				GameState = EGameState::EGS_Exit;
 			}
 		}
+        SDL_SetRenderDrawColor(_Renderer, 114, 166, 176, 255);
+        SDL_RenderClear(_Renderer);
         _Board.RenderBoard(_Renderer);
         SDL_RenderPresent(_Renderer);
         SDL_Delay(20);

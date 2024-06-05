@@ -31,8 +31,19 @@ target_include_directories(MineSweeper PRIVATE include)
 
 target_link_libraries(MineSweeper 
 	${SDL2_LIBRARY}
-	${SDL2_ttf_LIBRARIES}
+	${SDL2_ttf_LIBRARY}
 )
+
+# Copy Assets to the Build Directory
+# add_custom_command(
+# 	TARGET MineSweeper POST_BUILD
+# 	COMMAND ${CMAKE_COMMAND} -E copy_directory
+# 	${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:MineSweeper>/assets
+# )
+
+# install(TARGETS MineSweeper DESTINATION bin)
+# install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets DESTINATION bin/assets)
+
 
 install(TARGETS MineSweeper RUNTIME DESTINATION ${BIN_DIR}/)
 set_target_properties(MineSweeper PROPERTIES 
@@ -48,10 +59,10 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 		${BIN_DIR}/debug/SDL2.dll  )
 
 		add_custom_command( TARGET MineSweeper POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-		${SDL2_PATH}/lib/x64/SDL2.dll 
+		${SDL2_ttf_PATH}/lib/x64/SDL2_ttf.dll 
 		${BIN_DIR}/debug/SDL2_ttf.dll  )
 	add_custom_command( TARGET MineSweeper POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-		${SDL2_PATH}/lib/x64/SDL2.dll
+		${SDL2_ttf_PATH}/lib/x64/SDL2_ttf.dll
 		${BIN_DIR}/debug/SDL2_ttf.dll  )
 elseif()
 	add_custom_command( TARGET MineSweeper POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different 
@@ -62,9 +73,9 @@ elseif()
 		${BIN_DIR}/debug/SDL2.dll  )
 
 		add_custom_command( TARGET MineSweeper POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-		${SDL2_PATH}/lib/x64/SDL2.dll 
+		${SDL2_ttf_PATH}/lib/x64/SDL2_ttf.dll 
 		${BIN_DIR}/debug/SDL2_ttf.dll  )
 	add_custom_command( TARGET MineSweeper POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-		${SDL2_PATH}/lib/x64/SDL2.dll
+		${SDL2_ttf_PATH}/lib/x64/SDL2_ttf.dll
 		${BIN_DIR}/debug/SDL2_ttf.dll  )
 endif()
