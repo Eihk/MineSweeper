@@ -76,10 +76,10 @@ SET(SDL2_ttf_SEARCH_PATHS
 	/opt/local # DarwinPorts
 	/opt/csw # Blastwave
 	/opt
-	${SDL2_ttf}
+	${SDL2_ttf_PATH}
 )
 
-FIND_PATH(SDL2_ttf_INCLUDE_DIR SDL_tff.h
+FIND_PATH(SDL2_ttf_INCLUDE_DIR SDL_ttf.h
 	HINTS
 	$ENV{SDL2_ttfDIR}
 	PATH_SUFFIXES include
@@ -113,7 +113,7 @@ IF(NOT SDL2_ttf_BUILDING_LIBRARY)
 			PATH_SUFFIXES ${PATH_SUFFIXES}
 			PATHS ${SDL2_ttf_SEARCH_PATHS}
 		)
-	ENDIF(NOT ${SDL2_ttf2_INCLUDE_DIR} MATCHES ".framework")
+	ENDIF(NOT ${SDL2_ttf_INCLUDE_DIR} MATCHES ".framework")
 ENDIF(NOT SDL2_ttf_BUILDING_LIBRARY)
 
 # SDL2 may require threads on your system.
@@ -130,7 +130,7 @@ IF(MINGW)
 	SET(MINGW32_LIBRARY mingw32 "-mwindows" CACHE STRING "mwindows for MinGW")
 ENDIF(MINGW)
 
-IF(SSDL2_ttf_LIBRARY_TEMP)
+IF(SDL2_ttf_LIBRARY_TEMP)
 	# For SDL2main
 	IF(NOT SDL2_ttf_BUILDING_LIBRARY)
 		IF(SDL2_ttfMAIN_LIBRARY)

@@ -15,12 +15,12 @@ set(BIN_DIR ${MineSweeper_SOURCE_DIR}/bin)
 # SDL2_PATH is already expected in module file. I'm using the same variable.
 IF (WIN32)
   set(SDL2_PATH "E:/Project/Library/SDL2-2.30.3")
-  set(SDL2_tff_PATH "E:/Project/Library/SDL2_ttf-2.20.0")
+  set(SDL2_ttf_PATH "E:/Project/Library/SDL2_ttf-2.22.0")
 ENDIF()
 
 find_package(SDL2 REQUIRED)
-#find_package(SDL2_tff REQUIRED)
-include_directories(${SDL2_INCLUDE_DIR})
+find_package(SDL2_ttf REQUIRED)
+include_directories(${SDL2_INCLUDE_DIR} ${SDL2_ttf_INCLUDE_DIR})
 
 file(GLOB SOURCE_FILES "src/*.cpp")
 add_executable(MineSweeper 
@@ -31,6 +31,7 @@ target_include_directories(MineSweeper PRIVATE include)
 
 target_link_libraries(MineSweeper 
 	${SDL2_LIBRARY}
+	${SDL2_ttf_LIBRARIES}
 )
 
 install(TARGETS MineSweeper RUNTIME DESTINATION ${BIN_DIR}/)
@@ -45,6 +46,13 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	add_custom_command( TARGET MineSweeper POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
 		${SDL2_PATH}/lib/x64/SDL2.dll
 		${BIN_DIR}/debug/SDL2.dll  )
+
+		add_custom_command( TARGET MineSweeper POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+		${SDL2_PATH}/lib/x64/SDL2.dll 
+		${BIN_DIR}/debug/SDL2_ttf.dll  )
+	add_custom_command( TARGET MineSweeper POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+		${SDL2_PATH}/lib/x64/SDL2.dll
+		${BIN_DIR}/debug/SDL2_ttf.dll  )
 elseif()
 	add_custom_command( TARGET MineSweeper POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different 
 		${SDL2_PATH}/lib/x86/SDL2.dll 
@@ -52,4 +60,11 @@ elseif()
 	add_custom_command( TARGET MineSweeper POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
 		${SDL2_PATH}/lib/x86/SDL2.dll
 		${BIN_DIR}/debug/SDL2.dll  )
+
+		add_custom_command( TARGET MineSweeper POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+		${SDL2_PATH}/lib/x64/SDL2.dll 
+		${BIN_DIR}/debug/SDL2_ttf.dll  )
+	add_custom_command( TARGET MineSweeper POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+		${SDL2_PATH}/lib/x64/SDL2.dll
+		${BIN_DIR}/debug/SDL2_ttf.dll  )
 endif()
