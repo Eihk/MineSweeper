@@ -3,11 +3,12 @@
 #include "Button.h"
 
 #define NUMBER_COUNT 9
-#define CellGap 4
+#define CellGap 2
 #define CellSize 32
 
 enum class ECellType{
     ECT_Nothing,
+    ECT_Number,
     ECT_Bomb,
 };
 
@@ -23,6 +24,8 @@ public:
     Cell(const SDL_Rect& rect);
 
     void FlipCell();
+    void ChangeCellType(ECellType NewType);
+    void UpdateCellType();
 
     static SDL_Color BaseColor;
     static SDL_Color PressedColor;
@@ -33,7 +36,7 @@ public:
     static SDL_Texture* BombTexture;
 
 private:
-    ECellType CellType;
+    ECellType CellType = ECellType::ECT_Nothing;
     ECellState CellState = ECellState::ECS_Unflipped;
     
 public:

@@ -1,14 +1,78 @@
 #include "Board.h"
-#include <iostream>
 
 Board::Board(SDL_Renderer* renderer, const GameDifficulty& GameDifficulty){
     _Rows = GameDifficulty.Rows;
     _Cols = GameDifficulty.Cols;
     _Bombs = GameDifficulty.Bombs;
 
+    int yHud = 120;
+    GenerateCells(yHud);
+    BoardState = EBoardState::EBS_FirstMove;
+}
+
+void Board::GenerateCells(int yHud)
+{
+    _Map = new Cell[_Rows * _Cols];
+    int xCell = CellGap;
+    int yCell = yHud + CellGap;
+
+    for (int row = 0; row < _Rows; row++)
+    {
+        for (int col = 0; col < _Cols; col++)
+        {
+            SDL_Rect rect = {xCell, yCell, CellSize, CellSize};
+            _Map[GetIndex(row, col)] = Cell(rect);
+            xCell += CellSize + CellGap;
+        }
+        xCell = CellGap;
+        yCell += CellSize + CellGap;
+    }
+}
+
+void Board::GenerateBombs(const int FirstClickedRow, const int FirstClickedCol){
+    while(BombsIndexList.size() != _Bombs){
+        AddBomb(FirstClickedRow, FirstClickedCol);
+    }
+    GenerateNumbers();
+}
+
+void Board::AddBomb(const int FirstClickedRow, const int FirstClickedCol){
+    static std::default_random_engine BombRandomEngine;
+    std::uniform_int_distribution<> Row(0, _Rows - 1);
+    std::uniform_int_distribution<> Col(0, _Cols - 1);
+
+    int xFutureBombPos = Row(BombRandomEngine);
+    int yFutureBombPos = Col(BombRandomEngine);
+
+    while(!IsCellAvailable(xFutureBombPos, yFutureBombPos, FirstClickedRow, FirstClickedCol)){
+        xFutureBombPos = Row(BombRandomEngine);
+        yFutureBombPos = Col(BombRandomEngine);
+    }
+
+    BombsIndexList.push_back(GetIndex(xFutureBombPos, yFutureBombPos));
+    _Map[GetIndex(xFutureBombPos, yFutureBombPos)].ChangeCellType(ECellType::ECT_Bomb);
+}
+
+bool Board::IsCellAvailable(const int xFutureBombPos, const int yFutureBombPos, const int FirstClickedRow, const int FirstClickedCol){
+    if(BombsIndexList.size() == 0) return true;
+    if((xFutureBombPos == FirstClickedCol) && (yFutureBombPos == FirstClickedRow)) return false;
+    
+    bool IsBombAlreadyThere = false;
+    const int FutureBombIndex = GetIndex(xFutureBombPos, yFutureBombPos);
+    for (auto& ExistingBombIndex: BombsIndexList){
+        if(FutureBombIndex == ExistingBombIndex){
+            IsBombAlreadyThere = true;
+            break;
+        }
+    }
+
+    return !IsBombAlreadyThere;
+}
+
+void Board::GenerateNumbers(){
     const int MaxNumber = 9;
     const SDL_Color NumbersColor[MaxNumber] =
-    {{  0,   0,   0,  0},  //0 = Nothing (wont be used but kept to make index make more sense)
+    {{  0,   0,   0,  0},  //0 = Nothing
     { 20,  57, 168, 255},  //1 = BLUE
     { 20, 148,  18, 255},  //2 = GREEN
     {179,  30,  30, 255},  //3 = RED
@@ -18,21 +82,7 @@ Board::Board(SDL_Renderer* renderer, const GameDifficulty& GameDifficulty){
     {  0,   0,   0, 255},  //7 = BLACK
     {255, 255, 255, 255}}; //8 = WHITE
 
-    int yHud = 120;
 
-    _Map = new Cell[_Rows * _Cols]; 
-    int xCell = CellGap;
-    int yCell = yHud + CellGap;
-
-    for (int row = 0; row < _Rows; row++){
-        for (int col = 0; col < _Cols; col++){
-            SDL_Rect rect = {xCell, yCell, CellSize, CellSize};
-            _Map[GetIndex(row, col)] = Cell(rect);
-            xCell += CellSize + CellGap;
-        }
-        xCell = CellGap;
-        yCell += CellSize + CellGap; 
-    }
 }
 
 int Board::GetIndex(const int row, const int col){
@@ -64,6 +114,10 @@ void Board::HandleMouseClick(const SDL_Event& event, const std::function<void(Ce
     for (int row = 0; row < _Rows; row++){
         for (int col = 0; col < _Cols; col++){
             if(_Map[GetIndex(row, col)].IsMouseInside(xMouse, yMouse)){
+                if(BoardState == EBoardState::EBS_FirstMove){
+                    GenerateBombs(row, col);
+                    BoardState =EBoardState::EBS_Playing;
+                }
                 HandleCell(_Map[GetIndex(row, col)]);
             }
             xCell += CellSize + CellGap;
@@ -73,12 +127,7 @@ void Board::HandleMouseClick(const SDL_Event& event, const std::function<void(Ce
     }
 }
 
-void Board::GenerateBomb(){
-    //_Bombs // Number of bomb
-    const int NumberOfCells = _Rows * _Cols;
-    
 
-}
 
 Board::~Board(){
     delete[] _Map;

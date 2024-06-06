@@ -19,3 +19,22 @@ void Cell::FlipCell(){
     CellState = ECellState::ECS_Flipped;
     ChangeColorTo(PressedColor);
 }
+
+void Cell::ChangeCellType(ECellType NewType){
+    CellType = NewType;
+    UpdateCellType();
+}
+
+void Cell::UpdateCellType(){
+    switch (CellType)
+    {
+    case ECellType::ECT_Bomb:
+        ChangeColorTo({255, 0, 0, 255});
+        break;
+    case ECellType::ECT_Number:
+        ChangeColorTo({0, 0, 255, 255});
+        break;
+    default:
+        break;
+    }
+}
