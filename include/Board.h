@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <iostream>
+#include <string>
 #include <vector>
 #include <random>
 #include <functional>
@@ -33,6 +34,7 @@ private:
     int _Rows;
     int _Cols;
     int _Bombs;
+    SDL_Renderer * _Renderer;
 
     std::vector<int> BombsIndexList;
 
@@ -44,5 +46,7 @@ private:
     void GenerateCells();
     void AddBomb(const int FirstClickedRow, const int FirstClickedCol);
     bool IsCellAvailable(const int xFutureBombPos, const int yFutureBombPos, const int FirstClickedRow, const int FirstClickedCol);
+    int GetNeighborBombs(const int Row, const int Col);
+    bool IsBombPlantedAt(const int Row, const int Col);
 };
 

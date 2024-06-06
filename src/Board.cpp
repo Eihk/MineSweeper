@@ -4,6 +4,7 @@ Board::Board(SDL_Renderer* renderer, const GameDifficulty& GameDifficulty){
     _Rows = GameDifficulty.Rows;
     _Cols = GameDifficulty.Cols;
     _Bombs = GameDifficulty.Bombs;
+    _Renderer = renderer;
 
     int yHud = 120;
     GenerateCells(yHud);
@@ -83,6 +84,47 @@ void Board::GenerateNumbers(){
     {255, 255, 255, 255}}; //8 = WHITE
 
 
+    int yHud = 120;
+    int xCell = CellGap;
+    int yCell = yHud + CellGap;
+    for (int row = 0; row < _Rows; row++){
+        for (int col = 0; col < _Cols; col++){
+            Cell& CurrentCell = _Map[GetIndex(row, col)];
+            if(!(CurrentCell.GetCellType() == ECellType::ECT_Bomb)){
+                const int NeighborBombs = GetNeighborBombs(row, col);
+                if(NeighborBombs != 0){
+                    std::string Str = std::to_string(NeighborBombs);
+                    const char* Text = Str.c_str();
+                    CurrentCell.AddNumber(_Renderer, Text, NumbersColor[NeighborBombs]);
+                    CurrentCell.ChangeCellType(ECellType::ECT_Number);
+                }
+            }
+            xCell += CellSize + CellGap;
+        }
+        xCell = CellGap;
+        yCell += CellSize + CellGap; 
+    }
+}
+
+int Board::GetNeighborBombs(const int Row, const int Col){
+    int BombFound = 0;
+
+    for(int i = -1; i < 2; i++){
+        if(!((Row + i < 0) || (Row + i > _Rows))){
+            for(int j = -1; j < 2; j++){
+                if(!((Col + j < 0) || (Col + j > _Cols))){
+                    if(IsBombPlantedAt(Row + i, Col + j)){
+                        BombFound++;
+                    }
+                }
+            }
+        }
+    }
+    return BombFound;
+}
+
+bool Board::IsBombPlantedAt(const int Row, const int Col){
+    return _Map[GetIndex(Row, Col)].GetCellType() == ECellType::ECT_Bomb;
 }
 
 int Board::GetIndex(const int row, const int col){

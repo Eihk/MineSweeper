@@ -32,9 +32,21 @@ void Cell::UpdateCellType(){
         ChangeColorTo({255, 0, 0, 255});
         break;
     case ECellType::ECT_Number:
-        ChangeColorTo({0, 0, 255, 255});
+        //ChangeColorTo({0, 0, 255, 255});
         break;
     default:
         break;
     }
+}
+
+void Cell::AddNumber(SDL_Renderer* _Renderer, const char* Text, SDL_Color Color){
+    const int FontSize = 30;
+    TTF_Font* FontType = TTF_OpenFont("assets/Octin_Sports_Free.ttf", FontSize);
+
+    SDL_Surface* SurfaceMessage = TTF_RenderText_Solid(FontType, Text, Color);
+    SDL_Texture* TextureMessage = SDL_CreateTextureFromSurface(_Renderer, SurfaceMessage);
+
+    //SDL_RenderCopy(Renderer, TextureMessage, NULL, &GetRect());
+    SetTexture(TextureMessage);
+    TTF_CloseFont(FontType);
 }

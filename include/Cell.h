@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include "Button.h"
 
 #define NUMBER_COUNT 9
@@ -26,6 +27,7 @@ public:
     void FlipCell();
     void ChangeCellType(ECellType NewType);
     void UpdateCellType();
+    void AddNumber(SDL_Renderer* _Renderer, const char* Text, SDL_Color Color);
 
     static SDL_Color BaseColor;
     static SDL_Color PressedColor;
@@ -41,4 +43,5 @@ private:
     
 public:
     inline ECellState GetCellState() const {return CellState;}
+    inline ECellType GetCellType() const {return CellType;}
 };
