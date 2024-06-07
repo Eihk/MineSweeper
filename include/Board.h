@@ -4,8 +4,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <random>
 #include <functional>
+
+#include <random>
 
 #include "Cell.h"
 #include "GameDifficulty.h"
@@ -27,14 +28,16 @@ public:
     void GenerateCells(int yHud);
     int GetIndex(const int row, const int col);
     void RenderBoard(SDL_Renderer *renderer);
-    void HandleMouseClick(const SDL_Event &event, const std::function<void(Cell &)> &HandleDifficulty);
+    void HandleMouseClick(const SDL_Event &event);
+    void HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int xMouse, const int yMouse);
     ~Board();
 
 private:
     int _Rows;
     int _Cols;
     int _Bombs;
-    SDL_Renderer * _Renderer;
+    int _MaxCellsIndex;
+    SDL_Renderer *_Renderer;
 
     std::vector<int> BombsIndexList;
 
@@ -47,6 +50,9 @@ private:
     void AddBomb(const int FirstClickedRow, const int FirstClickedCol);
     bool IsCellAvailable(const int xFutureBombPos, const int yFutureBombPos, const int FirstClickedRow, const int FirstClickedCol);
     int GetNeighborBombs(const int Row, const int Col);
+    std::vector<int> GetNeighborCell(Cell& ThisCell);
     bool IsBombPlantedAt(const int Row, const int Col);
+    void ExpandFrom(Cell& FromThisCell);
+    bool InsideIndexRange(const int Row, const int Col);
 };
 

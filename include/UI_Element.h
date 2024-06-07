@@ -12,7 +12,7 @@ private:
 
     void CenterTexture();
 
-public:    
+public:
     UI_Element();
     UI_Element(const SDL_Rect& rect, const SDL_Color color);
     void SetTexture(SDL_Texture* texture);

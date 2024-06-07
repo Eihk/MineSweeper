@@ -4,6 +4,7 @@ Board::Board(SDL_Renderer* renderer, const GameDifficulty& GameDifficulty){
     _Rows = GameDifficulty.Rows;
     _Cols = GameDifficulty.Cols;
     _Bombs = GameDifficulty.Bombs;
+    _MaxCellsIndex = _Rows * _Cols;
     _Renderer = renderer;
 
     int yHud = 120;
@@ -17,12 +18,10 @@ void Board::GenerateCells(int yHud)
     int xCell = CellGap;
     int yCell = yHud + CellGap;
 
-    for (int row = 0; row < _Rows; row++)
-    {
-        for (int col = 0; col < _Cols; col++)
-        {
+    for (int row = 0; row < _Rows; row++){
+        for (int col = 0; col < _Cols; col++){
             SDL_Rect rect = {xCell, yCell, CellSize, CellSize};
-            _Map[GetIndex(row, col)] = Cell(rect);
+            _Map[GetIndex(row, col)] = Cell(rect, row, col);
             xCell += CellSize + CellGap;
         }
         xCell = CellGap;
@@ -38,7 +37,8 @@ void Board::GenerateBombs(const int FirstClickedRow, const int FirstClickedCol){
 }
 
 void Board::AddBomb(const int FirstClickedRow, const int FirstClickedCol){
-    static std::default_random_engine BombRandomEngine;
+    std::random_device RandomDevice;
+    static std::default_random_engine BombRandomEngine(RandomDevice());
     std::uniform_int_distribution<> Row(0, _Rows - 1);
     std::uniform_int_distribution<> Col(0, _Cols - 1);
 
@@ -110,9 +110,9 @@ int Board::GetNeighborBombs(const int Row, const int Col){
     int BombFound = 0;
 
     for(int i = -1; i < 2; i++){
-        if(!((Row + i < 0) || (Row + i > _Rows))){
+        if(!((Row + i < 0) || (Row + i > _Rows - 1))){
             for(int j = -1; j < 2; j++){
-                if(!((Col + j < 0) || (Col + j > _Cols))){
+                if(!((Col + j < 0) || (Col + j > _Cols - 1))){
                     if(IsBombPlantedAt(Row + i, Col + j)){
                         BombFound++;
                     }
@@ -138,7 +138,6 @@ void Board::RenderBoard(SDL_Renderer* renderer){
     for (int row = 0; row < _Rows; row++){
         for (int col = 0; col < _Cols; col++){
             _Map[GetIndex(row, col)].Render(renderer);
-            
             xCell += CellSize + CellGap;
         }
         xCell = CellGap;
@@ -146,7 +145,7 @@ void Board::RenderBoard(SDL_Renderer* renderer){
     }
 }
 
-void Board::HandleMouseClick(const SDL_Event& event, const std::function<void(Cell&)>& HandleCell){
+void Board::HandleMouseClick(const SDL_Event& event){
     int xMouse, yMouse;
     SDL_GetMouseState(&xMouse, &yMouse);
 
@@ -155,12 +154,9 @@ void Board::HandleMouseClick(const SDL_Event& event, const std::function<void(Ce
     int yCell = yHud + CellGap;
     for (int row = 0; row < _Rows; row++){
         for (int col = 0; col < _Cols; col++){
-            if(_Map[GetIndex(row, col)].IsMouseInside(xMouse, yMouse)){
-                if(BoardState == EBoardState::EBS_FirstMove){
-                    GenerateBombs(row, col);
-                    BoardState =EBoardState::EBS_Playing;
-                }
-                HandleCell(_Map[GetIndex(row, col)]);
+            Cell& CurrentCell = _Map[GetIndex(row, col)];
+            if(CurrentCell.IsMouseInside(xMouse, yMouse)){
+                HandleCellClick(CurrentCell, event, xMouse, yMouse);
             }
             xCell += CellSize + CellGap;
         }
@@ -169,7 +165,62 @@ void Board::HandleMouseClick(const SDL_Event& event, const std::function<void(Ce
     }
 }
 
+void Board::HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int xMouse, const int yMouse){
+    if (!(CurrentCell.IsCellOpen())){
+        if (event.button.button == SDL_BUTTON_LEFT){
+            if (BoardState == EBoardState::EBS_FirstMove){
+                GenerateBombs(xMouse, yMouse);
+                BoardState = EBoardState::EBS_Playing;
+            }
 
+            if(BoardState == EBoardState::EBS_Playing){
+                //CurrentCell.Render(_Renderer);
+                if(CurrentCell.IsCellBomb()){
+                    BoardState = EBoardState::EBS_Lose;
+                    printf("You Lost");
+                }
+                ExpandFrom(CurrentCell);
+            }
+        }
+    }
+}
+
+void Board::ExpandFrom(Cell& ThisCell){
+    if(ThisCell.IsCellOpen()) return;
+    ThisCell.OpenCell();
+    ThisCell.Render(_Renderer);
+    if(ThisCell.IsCellNumber()) return;
+
+    if(ThisCell.IsCellNothing()){
+        std::vector<int> NeighborCells = GetNeighborCell(ThisCell);
+        for(int idx = 0; idx < NeighborCells.size(); idx++){
+            ExpandFrom(_Map[NeighborCells[idx]]);
+        }
+    }
+}
+
+std::vector<int> Board::GetNeighborCell(Cell& ThisCell){
+    const int Row = ThisCell._Row;
+    const int Col = ThisCell._Col;
+    std::vector<int> NeighborCell;
+    int TopCell = GetIndex(Row - 1, Col);
+    int BottomCell = GetIndex(Row + 1, Col);
+    int LeftCell = GetIndex(Row, Col - 1);
+    int RightCell = GetIndex(Row, Col + 1);
+
+    if(InsideIndexRange(Row - 1, Col)){ NeighborCell.push_back(TopCell);}
+    if(InsideIndexRange(Row + 1, Col)){ NeighborCell.push_back(BottomCell);}
+    if(InsideIndexRange(Row, Col - 1)){ NeighborCell.push_back(LeftCell);}
+    if(InsideIndexRange(Row, Col + 1)){ NeighborCell.push_back(RightCell);}
+
+    return NeighborCell;
+}
+
+bool Board::InsideIndexRange(const int Row, const int Col){
+    bool InsideRowRange = (Row > -1) && (Row < _Rows);
+    bool InsideColRange = (Col > -1) && (Col < _Cols);
+    return InsideColRange && InsideRowRange;
+}
 
 Board::~Board(){
     delete[] _Map;

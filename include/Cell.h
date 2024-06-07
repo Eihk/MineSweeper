@@ -14,20 +14,28 @@ enum class ECellType{
 };
 
 enum class ECellState{
-    ECS_Unflipped,
-    ECS_Flipped,
+    ECS_Closed,
+    ECS_Opened,
 };
 
 class Cell: public Button{
 
 public:
     Cell();
-    Cell(const SDL_Rect& rect);
+    Cell(const SDL_Rect& rect, const int row, const int col);
 
-    void FlipCell();
     void ChangeCellType(ECellType NewType);
+    void OpenCell();
     void UpdateCellType();
     void AddNumber(SDL_Renderer* _Renderer, const char* Text, SDL_Color Color);
+
+    bool IsCellOpen();
+    bool IsCellBomb();
+    bool IsCellNothing();
+    bool IsCellNumber();
+
+    int _Row;
+    int _Col;
 
     static SDL_Color BaseColor;
     static SDL_Color PressedColor;
@@ -39,7 +47,7 @@ public:
 
 private:
     ECellType CellType = ECellType::ECT_Nothing;
-    ECellState CellState = ECellState::ECS_Unflipped;
+    ECellState CellState = ECellState::ECS_Closed;
     
 public:
     inline ECellState GetCellState() const {return CellState;}

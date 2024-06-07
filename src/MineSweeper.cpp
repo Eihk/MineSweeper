@@ -68,13 +68,6 @@ void MineSweeper::BoardScreen(){
     SDL_SetWindowPosition(_Window, SDL_WINDOWPOS_CENTERED,
     SDL_WINDOWPOS_CENTERED);
 
-    auto HandleClick = [&](Cell& _Cell){
-        if(_Cell.GetCellState() == ECellState::ECS_Unflipped){
-            _Cell.FlipCell();
-            _Cell.Render(_Renderer);
-        }
-    };
-
     while(GameState == EGameState::EGS_Board){
 		SDL_Event event;
 		while (SDL_PollEvent(&event)){
@@ -82,7 +75,7 @@ void MineSweeper::BoardScreen(){
 				GameState = EGameState::EGS_Exit;
 			}
             if(event.type == SDL_MOUSEBUTTONDOWN){
-                _Board.HandleMouseClick(event, HandleClick);
+                _Board.HandleMouseClick(event);
             }
 			if (event.type == SDL_WINDOWEVENT
 				&& event.window.event == SDL_WINDOWEVENT_CLOSE
@@ -93,7 +86,7 @@ void MineSweeper::BoardScreen(){
 				GameState = EGameState::EGS_Exit;
 			}
 		}
-        SDL_SetRenderDrawColor(_Renderer, 114, 166, 176, 255);
+        SDL_SetRenderDrawColor(_Renderer, 0, 0, 0, 0);
         SDL_RenderClear(_Renderer);
         _Board.RenderBoard(_Renderer);
         SDL_RenderPresent(_Renderer);
