@@ -48,6 +48,8 @@ public:
 private:
     ECellType CellType = ECellType::ECT_Nothing;
     ECellState CellState = ECellState::ECS_Closed;
+
+    SDL_Texture* TextureMessage = nullptr;
     
 public:
     inline ECellState GetCellState() const {return CellState;}

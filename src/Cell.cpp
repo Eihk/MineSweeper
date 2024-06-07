@@ -20,26 +20,18 @@ Cell::Cell(const SDL_Rect& rect, const int row, const int col) : Button(rect, Ba
 
 void Cell::ChangeCellType(ECellType NewType){
     CellType = NewType;
-    UpdateCellType();
 }
 
 void Cell::OpenCell(){
-    ChangeColorTo(PressedColor);
-    CellState = ECellState::ECS_Opened;
-}
-
-void Cell::UpdateCellType(){
-    switch (CellType)
-    {
-    case ECellType::ECT_Bomb:
-        ChangeColorTo({255, 0, 0, 255});
-        break;
-    case ECellType::ECT_Number:
-        //ChangeColorTo({0, 0, 255, 255});
-        break;
-    default:
-        break;
+    if(TextureMessage != nullptr){
+        SetTexture(TextureMessage);
     }
+    if(IsCellBomb()){
+        ChangeColorTo({255, 0, 0, 255});
+    } else{
+        ChangeColorTo(PressedColor);
+    }
+    CellState = ECellState::ECS_Opened;
 }
 
 void Cell::AddNumber(SDL_Renderer* _Renderer, const char* Text, SDL_Color Color){
@@ -47,10 +39,9 @@ void Cell::AddNumber(SDL_Renderer* _Renderer, const char* Text, SDL_Color Color)
     TTF_Font* FontType = TTF_OpenFont("assets/Octin_Sports_Free.ttf", FontSize);
 
     SDL_Surface* SurfaceMessage = TTF_RenderText_Solid(FontType, Text, Color);
-    SDL_Texture* TextureMessage = SDL_CreateTextureFromSurface(_Renderer, SurfaceMessage);
+    TextureMessage = SDL_CreateTextureFromSurface(_Renderer, SurfaceMessage);
 
-    //SDL_RenderCopy(Renderer, TextureMessage, NULL, &GetRect());
-    SetTexture(TextureMessage);
+    SDL_RenderCopy(_Renderer, TextureMessage, NULL, &GetRect());
     TTF_CloseFont(FontType);
 }
 
