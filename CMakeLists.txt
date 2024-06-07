@@ -35,14 +35,14 @@ target_link_libraries(MineSweeper
 )
 
 # Copy Assets to the Build Directory
-# add_custom_command(
-# 	TARGET MineSweeper POST_BUILD
-# 	COMMAND ${CMAKE_COMMAND} -E copy_directory
-# 	${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:MineSweeper>/assets
-# )
+add_custom_command(
+	TARGET MineSweeper POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:MineSweeper>/assets
+)
 
-# install(TARGETS MineSweeper DESTINATION bin)
-# install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets DESTINATION bin/assets)
+install(TARGETS MineSweeper DESTINATION bin)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets DESTINATION bin/assets)
 
 
 install(TARGETS MineSweeper RUNTIME DESTINATION ${BIN_DIR}/)

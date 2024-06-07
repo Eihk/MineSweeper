@@ -175,7 +175,7 @@ void Board::HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int
 
             if(BoardState == EBoardState::EBS_Playing){
                 if(CurrentCell.IsCellBomb()){
-                    CurrentCell.Render(_Renderer);
+                    ShowAllBombs();
                     BoardState = EBoardState::EBS_Lose;
                     printf("You Lost");
                 }
@@ -187,7 +187,7 @@ void Board::HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int
 
 void Board::ExpandFrom(Cell& ThisCell){
     if(ThisCell.IsCellOpen()) return;
-    ThisCell.OpenCell();
+    ThisCell.OpenCell(_Renderer);
     ThisCell.Render(_Renderer);
     if(ThisCell.IsCellNumber()) return;
 
@@ -205,19 +205,30 @@ std::vector<int> Board::GetNeighborCell(Cell& ThisCell){
     std::vector<int> NeighborCell;
 
     for(int i = -1; i < 2; i++){
-        if(!((Row + i < 0) || (Row + i > _Rows - 1))){
-            for(int j = -1; j < 2; j++){
-                if(!((Col + j < 0) || (Col + j > _Cols - 1))){
-                    if(!((Row + i == Row) && (Col + j == Col))){
-                        NeighborCell.push_back(GetIndex(Row + i, Col + j));
-                    }
-                    
+        for(int j = -1; j < 2; j++){
+            if(InsideIndexRange(Row +i , Col + j)){
+                if(!((Row + i == Row) && (Col + j == Col))){
+                    NeighborCell.push_back(GetIndex(Row + i, Col + j));
                 }
             }
         }
     }
 
     return NeighborCell;
+}
+
+bool Board::InsideIndexRange(const int Row, const int Col){
+    bool InsideRowRange = (Row > -1) && (Row < _Rows);
+    bool InsideColRange = (Col > -1) && (Col < _Cols);
+    return InsideColRange && InsideRowRange;
+}
+
+void Board::ShowAllBombs(){
+    for(auto CellIndex: BombsIndexList){
+        Cell& CurrentCell = _Map[CellIndex];
+        CurrentCell.OpenCell(_Renderer);
+        CurrentCell.Render(_Renderer);
+    }
 }
 
 Board::~Board(){

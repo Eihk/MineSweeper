@@ -22,11 +22,17 @@ void Cell::ChangeCellType(ECellType NewType){
     CellType = NewType;
 }
 
-void Cell::OpenCell(){
+void Cell::OpenCell(SDL_Renderer* _Renderer){
     if(TextureMessage != nullptr){
         SetTexture(TextureMessage);
     }
     if(IsCellBomb()){
+        SDL_Surface* SurfaceImage = SDL_LoadBMP(BombFilePath);
+        if(SurfaceImage != nullptr){
+            SDL_Texture* TextureImage = SDL_CreateTextureFromSurface(_Renderer, SurfaceImage);
+            SDL_FreeSurface(SurfaceImage);
+            SetTexture(TextureImage);
+        }
         ChangeColorTo({255, 0, 0, 255});
     } else{
         ChangeColorTo(PressedColor);

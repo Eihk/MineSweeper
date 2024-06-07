@@ -53,5 +53,7 @@ private:
     std::vector<int> GetNeighborCell(Cell& ThisCell);
     bool IsBombPlantedAt(const int Row, const int Col);
     void ExpandFrom(Cell& FromThisCell);
+    bool InsideIndexRange(const int Row, const int Col);
+    void ShowAllBombs();
 };
 

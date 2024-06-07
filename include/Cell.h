@@ -7,6 +7,9 @@
 #define CellGap 2
 #define CellSize 32
 
+#define BombFilePath "assets/Bomb.bmp"
+#define FlagFilePath "assets/Flag.bmp"
+
 enum class ECellType{
     ECT_Nothing,
     ECT_Number,
@@ -25,7 +28,7 @@ public:
     Cell(const SDL_Rect& rect, const int row, const int col);
 
     void ChangeCellType(ECellType NewType);
-    void OpenCell();
+    void OpenCell(SDL_Renderer* _Renderer);
     void UpdateCellType();
     void AddNumber(SDL_Renderer* _Renderer, const char* Text, SDL_Color Color);
 
