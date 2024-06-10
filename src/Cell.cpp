@@ -19,7 +19,7 @@ Cell::Cell(const SDL_Rect& rect, const int row, const int col) : Button(rect, Ba
 }
 
 void Cell::ChangeCellType(ECellType NewType){
-    CellType = NewType;
+    _CellType = NewType;
 }
 
 void Cell::OpenCell(SDL_Renderer* _Renderer){
@@ -37,7 +37,7 @@ void Cell::OpenCell(SDL_Renderer* _Renderer){
     } else{
         ChangeColorTo(PressedColor);
     }
-    CellState = ECellState::ECS_Opened;
+    _CellState = ECellState::ECS_Opened;
 }
 
 void Cell::AddNumber(SDL_Renderer* _Renderer, const char* Text, SDL_Color Color){
@@ -52,17 +52,42 @@ void Cell::AddNumber(SDL_Renderer* _Renderer, const char* Text, SDL_Color Color)
 }
 
 bool Cell::IsCellOpen(){
-    return CellState == ECellState::ECS_Opened;
+    return _CellState == ECellState::ECS_Opened;
 }
 
 bool Cell::IsCellBomb(){
-    return CellType == ECellType::ECT_Bomb;
+    return _CellType == ECellType::ECT_Bomb;
 }
 
 bool Cell::IsCellNothing(){
-    return CellType == ECellType::ECT_Nothing;
+    return _CellType == ECellType::ECT_Nothing;
 }
 
 bool Cell::IsCellNumber(){
-    return CellType == ECellType::ECT_Number;
+    return _CellType == ECellType::ECT_Number;
+}
+
+void Cell::RemoveFlag(){
+    _IsFlagged = false;
+    SetTexture(nullptr);
+}
+
+void Cell::GetFlag(SDL_Renderer* _Renderer){
+    _IsFlagged = true;
+    SDL_Surface* SurfaceImage = SDL_LoadBMP(FlagFilePath);
+    SDL_SetColorKey(SurfaceImage, SDL_TRUE, SDL_MapRGB(SurfaceImage->format, 255, 255, 255));
+    if(SurfaceImage != nullptr){
+        SDL_Texture* TextureImage = SDL_CreateTextureFromSurface(_Renderer, SurfaceImage);
+        SDL_FreeSurface(SurfaceImage);
+        SetTexture(TextureImage);
+    }
+    //ChangeColorTo({255, 0, 0, 255});
+}
+
+Cell::~Cell(){
+    for(auto& Texture: TextureOfNumbers){
+        SDL_DestroyTexture(Texture);
+    }
+    SDL_DestroyTexture(FlagTexture);
+    SDL_DestroyTexture(BombTexture);
 }

@@ -6,6 +6,7 @@
 #include "Menu.h"
 #include "Board.h"
 #include "GameDifficulty.h"
+#include "HUD.h"
 
 
 enum class EGameState {

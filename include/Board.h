@@ -11,6 +11,7 @@
 #include "Cell.h"
 #include "GameDifficulty.h"
 #include "Interface.h"
+#include "HUD.h"
 
 
 enum class EBoardState{
@@ -25,11 +26,10 @@ class Board{
 
 public:
     Board(SDL_Renderer *renderer, const GameDifficulty &GameDifficulty);
-    void GenerateCells(int yHud);
     int GetIndex(const int row, const int col);
     void RenderBoard(SDL_Renderer *renderer);
-    void HandleMouseClick(const SDL_Event &event);
-    void HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int xMouse, const int yMouse);
+    void HandleMouseClick(const SDL_Event &event, HUD& HUD);
+    void HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int xMouse, const int yMouse, HUD& Hud);
     ~Board();
 
 private:
@@ -52,7 +52,7 @@ private:
     int GetNeighborBombs(const int Row, const int Col);
     std::vector<int> GetNeighborCell(Cell& ThisCell);
     bool IsBombPlantedAt(const int Row, const int Col);
-    void ExpandFrom(Cell& FromThisCell);
+    void ExpandFrom(Cell& FromThisCell, HUD& Hud);
     bool InsideIndexRange(const int Row, const int Col);
     void ShowAllBombs();
 };

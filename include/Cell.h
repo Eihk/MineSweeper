@@ -26,6 +26,7 @@ class Cell: public Button{
 public:
     Cell();
     Cell(const SDL_Rect& rect, const int row, const int col);
+    ~Cell();
 
     void ChangeCellType(ECellType NewType);
     void OpenCell(SDL_Renderer* _Renderer);
@@ -36,6 +37,9 @@ public:
     bool IsCellBomb();
     bool IsCellNothing();
     bool IsCellNumber();
+
+    void RemoveFlag();
+    void GetFlag(SDL_Renderer* _Renderer);
 
     int _Row;
     int _Col;
@@ -49,12 +53,16 @@ public:
     static SDL_Texture* BombTexture;
 
 private:
-    ECellType CellType = ECellType::ECT_Nothing;
-    ECellState CellState = ECellState::ECS_Closed;
+
+    bool _IsFlagged = false;
+
+    ECellType _CellType = ECellType::ECT_Nothing;
+    ECellState _CellState = ECellState::ECS_Closed;
 
     SDL_Texture* TextureMessage = nullptr;
     
 public:
-    inline ECellState GetCellState() const {return CellState;}
-    inline ECellType GetCellType() const {return CellType;}
+    inline ECellState GetCellState() const {return _CellState;}
+    inline ECellType GetCellType() const {return _CellType;}
+    inline bool IsFlagged() const {return _IsFlagged;}
 };

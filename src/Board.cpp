@@ -7,12 +7,16 @@ Board::Board(SDL_Renderer* renderer, const GameDifficulty& GameDifficulty){
     _MaxCellsIndex = _Rows * _Cols;
     _Renderer = renderer;
 
-    int yHud = 120;
-    GenerateCells(yHud);
+    // Cell::FlagTexture = SDL_CreateTextureFromSurface(_Renderer, SDL_LoadBMP(FlagFilePath));
+    // SDL_FreeSurface(SDL_LoadBMP(FlagFilePath));
+    // Cell::BombTexture = SDL_CreateTextureFromSurface(_Renderer, SDL_LoadBMP(BombFilePath));
+    // SDL_FreeSurface(SDL_LoadBMP(BombFilePath));
+
+    GenerateCells();
     BoardState = EBoardState::EBS_FirstMove;
 }
 
-void Board::GenerateCells(int yHud)
+void Board::GenerateCells()
 {
     _Map = new Cell[_Rows * _Cols];
     int xCell = CellGap;
@@ -84,7 +88,6 @@ void Board::GenerateNumbers(){
     {255, 255, 255, 255}}; //8 = WHITE
 
 
-    int yHud = 120;
     int xCell = CellGap;
     int yCell = yHud + CellGap;
     for (int row = 0; row < _Rows; row++){
@@ -132,7 +135,6 @@ int Board::GetIndex(const int row, const int col){
 }
 
 void Board::RenderBoard(SDL_Renderer* renderer){
-    int yHud = 120;
     int xCell = CellGap;
     int yCell = yHud + CellGap;
     for (int row = 0; row < _Rows; row++){
@@ -145,18 +147,17 @@ void Board::RenderBoard(SDL_Renderer* renderer){
     }
 }
 
-void Board::HandleMouseClick(const SDL_Event& event){
+void Board::HandleMouseClick(const SDL_Event& event, HUD& HUD){
     int xMouse, yMouse;
     SDL_GetMouseState(&xMouse, &yMouse);
 
-    int yHud = 120;
     int xCell = CellGap;
     int yCell = yHud + CellGap;
     for (int row = 0; row < _Rows; row++){
         for (int col = 0; col < _Cols; col++){
             Cell& CurrentCell = _Map[GetIndex(row, col)];
             if(CurrentCell.IsMouseInside(xMouse, yMouse)){
-                HandleCellClick(CurrentCell, event, row, col);
+                HandleCellClick(CurrentCell, event, row, col, HUD);
             }
             xCell += CellSize + CellGap;
         }
@@ -165,9 +166,9 @@ void Board::HandleMouseClick(const SDL_Event& event){
     }
 }
 
-void Board::HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int xMouse, const int yMouse){
+void Board::HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int xMouse, const int yMouse, HUD& Hud){
     if (!(CurrentCell.IsCellOpen())){
-        if (event.button.button == SDL_BUTTON_LEFT){
+        if (event.button.button == SDL_BUTTON_LEFT && !CurrentCell.IsFlagged()){
             if (BoardState == EBoardState::EBS_FirstMove){
                 GenerateBombs(xMouse, yMouse);
                 BoardState = EBoardState::EBS_Playing;
@@ -179,22 +180,38 @@ void Board::HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int
                     BoardState = EBoardState::EBS_Lose;
                     printf("You Lost");
                 }
-                ExpandFrom(CurrentCell);
+                ExpandFrom(CurrentCell, Hud);
             }
         }
+        if (event.button.button == SDL_BUTTON_RIGHT){
+            if(CurrentCell.IsFlagged()){
+                CurrentCell.RemoveFlag();
+                Hud._FlagCounter->IncrementCounter();
+            } else{
+                CurrentCell.GetFlag(_Renderer);
+                Hud._FlagCounter->DecrementCounter();
+            }
+            CurrentCell.Render(_Renderer);
+        }
     }
+
+        
 }
 
-void Board::ExpandFrom(Cell& ThisCell){
+void Board::ExpandFrom(Cell& ThisCell, HUD& Hud){
     if(ThisCell.IsCellOpen()) return;
     ThisCell.OpenCell(_Renderer);
     ThisCell.Render(_Renderer);
+    if (ThisCell.IsFlagged()){
+        ThisCell.RemoveFlag();
+        Hud._FlagCounter->IncrementCounter();
+    }
     if(ThisCell.IsCellNumber()) return;
 
     if(ThisCell.IsCellNothing()){
         std::vector<int> NeighborCells = GetNeighborCell(ThisCell);
         for(int idx = 0; idx < NeighborCells.size(); idx++){
-            ExpandFrom(_Map[NeighborCells[idx]]);
+            ExpandFrom(_Map[NeighborCells[idx]], Hud);
         }
     }
 }
@@ -232,5 +249,6 @@ void Board::ShowAllBombs(){
 }
 
 Board::~Board(){
+    _Map = nullptr;
     delete[] _Map;
 }

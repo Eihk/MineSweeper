@@ -60,9 +60,10 @@ void MineSweeper::MenuScreen(){
 void MineSweeper::BoardScreen(){
     SDL_RenderClear(_Renderer);
     const int BoardScreenWidth = _GameDifficulty.Cols * (CellSize + CellGap) + CellGap;
-    const int BoardScreenHeight = _GameDifficulty.Rows * (CellSize + CellGap) + CellGap + 120;
+    const int BoardScreenHeight = _GameDifficulty.Rows * (CellSize + CellGap) + CellGap + yHud;
 
     Board _Board = Board(_Renderer, _GameDifficulty);
+    HUD _HUD = HUD(BoardScreenWidth, _GameDifficulty.Bombs);
 
     SDL_SetWindowSize(_Window, BoardScreenWidth, BoardScreenHeight);
     SDL_SetWindowPosition(_Window, SDL_WINDOWPOS_CENTERED,
@@ -75,7 +76,7 @@ void MineSweeper::BoardScreen(){
 				GameState = EGameState::EGS_Exit;
 			}
             if(event.type == SDL_MOUSEBUTTONDOWN){
-                _Board.HandleMouseClick(event);
+                _Board.HandleMouseClick(event, _HUD);
             }
 			if (event.type == SDL_WINDOWEVENT
 				&& event.window.event == SDL_WINDOWEVENT_CLOSE
@@ -89,6 +90,7 @@ void MineSweeper::BoardScreen(){
         SDL_SetRenderDrawColor(_Renderer, 0, 0, 0, 0);
         SDL_RenderClear(_Renderer);
         _Board.RenderBoard(_Renderer);
+        _HUD.Render(_Renderer);
         SDL_RenderPresent(_Renderer);
         SDL_Delay(20);
     }
