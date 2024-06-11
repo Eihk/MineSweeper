@@ -51,6 +51,17 @@ void HUD::SetButtonPlayingTexture(SDL_Renderer* Renderer){
     }
 }
 
+void HUD::HandleMouseClick(const SDL_Event& event, const std::function<void()>& HandleReset){
+    int xMouse, yMouse;
+    SDL_GetMouseState(&xMouse, &yMouse);
+
+    if (event.button.button == SDL_BUTTON_LEFT){
+        if(_ResetButton.IsMouseInside(xMouse, yMouse)){
+            HandleReset();
+        }
+    }
+}
+
 HUD::~HUD(){
     _FlagCounter = nullptr;
     _FlagCounter->~FlagCounter();

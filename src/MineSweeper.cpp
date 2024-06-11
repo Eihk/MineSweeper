@@ -69,6 +69,10 @@ void MineSweeper::BoardScreen(){
     SDL_SetWindowPosition(_Window, SDL_WINDOWPOS_CENTERED,
     SDL_WINDOWPOS_CENTERED);
 
+    auto HandleReset = [&](){
+        GameState = EGameState::EGS_Reset;
+    };
+
     while(GameState == EGameState::EGS_Board){
 		SDL_Event event;
 		while (SDL_PollEvent(&event)){
@@ -77,7 +81,7 @@ void MineSweeper::BoardScreen(){
 			}
             if(event.type == SDL_MOUSEBUTTONDOWN){
                 _Board.HandleMouseClick(event, _HUD);
-                
+                _HUD.HandleMouseClick(event, HandleReset);
             }
 			if (event.type == SDL_WINDOWEVENT
 				&& event.window.event == SDL_WINDOWEVENT_CLOSE
@@ -107,6 +111,9 @@ void MineSweeper::Play(){
             break;
         case EGameState::EGS_Board:
             BoardScreen();
+            break;
+        case EGameState::EGS_Reset:
+            GameState = EGameState::EGS_Board;
             break;
         default:
             break;

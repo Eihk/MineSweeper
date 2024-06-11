@@ -12,6 +12,7 @@
 enum class EGameState {
     EGS_Menu,
     EGS_Board,
+    EGS_Reset,
     EGS_Exit
 };
 

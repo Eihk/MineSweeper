@@ -5,6 +5,8 @@
 #include "FlagCounter.h"
 #include "TimerCount.h"
 #include "Button.h"
+#include <iostream>
+#include <functional>
 
 #define yHud 80
 #define DisplayWidth 86
@@ -22,6 +24,8 @@ public:
     void SetButtonLostTexture(SDL_Renderer* Renderer);
     void SetButtonWinTexture(SDL_Renderer* Renderer);
     void SetButtonPlayingTexture(SDL_Renderer* Renderer);
+    void HandleMouseClick(const SDL_Event &event, const std::function<void()>& HandleReset);
+
 
     ~HUD();
 private:
