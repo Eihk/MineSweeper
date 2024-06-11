@@ -7,10 +7,7 @@ Board::Board(SDL_Renderer* renderer, const GameDifficulty& GameDifficulty){
     _MaxCellsIndex = _Rows * _Cols;
     _Renderer = renderer;
 
-    // Cell::FlagTexture = SDL_CreateTextureFromSurface(_Renderer, SDL_LoadBMP(FlagFilePath));
-    // SDL_FreeSurface(SDL_LoadBMP(FlagFilePath));
-    // Cell::BombTexture = SDL_CreateTextureFromSurface(_Renderer, SDL_LoadBMP(BombFilePath));
-    // SDL_FreeSurface(SDL_LoadBMP(BombFilePath));
+    _CellsToOpen = _Rows * _Cols - _Bombs;
 
     GenerateCells();
     BoardState = EBoardState::EBS_FirstMove;
@@ -134,12 +131,27 @@ int Board::GetIndex(const int row, const int col){
     return row * _Cols + col;
 }
 
-void Board::RenderBoard(SDL_Renderer* renderer){
+void Board::RenderBoard(SDL_Renderer* Renderer, HUD& HUD){
+
+    /* Set HUD Button according to BoardState */
+    switch (BoardState)
+    {
+    case EBoardState::EBS_Lose:
+        HUD.SetButtonLostTexture(Renderer);
+        break;
+    case EBoardState::EBS_Win:
+        HUD.SetButtonWinTexture(Renderer);
+        break;
+    default:
+        HUD.SetButtonPlayingTexture(Renderer);
+        break;
+    }
+
     int xCell = CellGap;
     int yCell = yHud + CellGap;
     for (int row = 0; row < _Rows; row++){
         for (int col = 0; col < _Cols; col++){
-            _Map[GetIndex(row, col)].Render(renderer);
+            _Map[GetIndex(row, col)].Render(Renderer);
             xCell += CellSize + CellGap;
         }
         xCell = CellGap;
@@ -172,15 +184,19 @@ void Board::HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int
             if (BoardState == EBoardState::EBS_FirstMove){
                 GenerateBombs(xMouse, yMouse);
                 BoardState = EBoardState::EBS_Playing;
+                Hud._TimerCounter->StartTimer();
             }
 
             if(BoardState == EBoardState::EBS_Playing){
                 if(CurrentCell.IsCellBomb()){
                     ShowAllBombs();
                     BoardState = EBoardState::EBS_Lose;
-                    printf("You Lost");
+                    Hud._TimerCounter->StopTimer();
                 }
                 ExpandFrom(CurrentCell, Hud);
+                if(_CellsToOpen == 0){
+                    BoardState = EBoardState::EBS_Win;
+                }  
             }
         }
         if (event.button.button == SDL_BUTTON_RIGHT){
@@ -194,20 +210,21 @@ void Board::HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int
             CurrentCell.Render(_Renderer);
         }
     }
-
-        
 }
 
 void Board::ExpandFrom(Cell& ThisCell, HUD& Hud){
     if(ThisCell.IsCellOpen()) return;
+
     ThisCell.OpenCell(_Renderer);
     ThisCell.Render(_Renderer);
+    _CellsToOpen--;
+
     if (ThisCell.IsFlagged()){
         ThisCell.RemoveFlag();
         Hud._FlagCounter->IncrementCounter();
     }
+    
     if(ThisCell.IsCellNumber()) return;
-
     if(ThisCell.IsCellNothing()){
         std::vector<int> NeighborCells = GetNeighborCell(ThisCell);
         for(int idx = 0; idx < NeighborCells.size(); idx++){

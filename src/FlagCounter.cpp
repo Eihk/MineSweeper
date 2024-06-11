@@ -7,11 +7,11 @@ FlagCounter::FlagCounter(const int MaxBombs, SDL_Rect Rect){
 
     const int HeightPos = _Rect.y + _Rect.h*1/8;
     const int Gap = 2;
-    const int WidthSize = Rect.w/3 - 4*Gap;
+    const int WidthSize = Rect.w/3 - 5*Gap/3;
     const int HeightSize = _Rect.h*3/4;
-    _SignRect = {_Rect.x + WidthSize +  Gap, HeightPos, WidthSize - 10, HeightSize};
-    _FirstNumberRect = {_Rect.x + 2*WidthSize - 10 + Gap, HeightPos, WidthSize, HeightSize};
-    _SecondNumberRect = {_Rect.x + 3*WidthSize - 10 + Gap, HeightPos, WidthSize, HeightSize};
+    _SignRect = {_Rect.x + 2*Gap + 5, HeightPos, WidthSize - 10, HeightSize};
+    _FirstNumberRect = {_Rect.x + WidthSize + 3*Gap -5, HeightPos, WidthSize, HeightSize};
+    _SecondNumberRect = {_Rect.x + 2*WidthSize + 4*Gap -5, HeightPos, WidthSize, HeightSize};
 }
 
 void FlagCounter::IncrementCounter(){

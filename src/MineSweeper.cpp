@@ -77,6 +77,7 @@ void MineSweeper::BoardScreen(){
 			}
             if(event.type == SDL_MOUSEBUTTONDOWN){
                 _Board.HandleMouseClick(event, _HUD);
+                
             }
 			if (event.type == SDL_WINDOWEVENT
 				&& event.window.event == SDL_WINDOWEVENT_CLOSE
@@ -87,9 +88,10 @@ void MineSweeper::BoardScreen(){
 				GameState = EGameState::EGS_Exit;
 			}
 		}
+
         SDL_SetRenderDrawColor(_Renderer, 0, 0, 0, 0);
         SDL_RenderClear(_Renderer);
-        _Board.RenderBoard(_Renderer);
+        _Board.RenderBoard(_Renderer, _HUD);
         _HUD.Render(_Renderer);
         SDL_RenderPresent(_Renderer);
         SDL_Delay(20);
@@ -113,7 +115,7 @@ void MineSweeper::Play(){
 }
 
 MineSweeper::~MineSweeper(){
-    /* Destriy Window and Renderer */
+    /* Destroy Window and Renderer */
     SDL_DestroyRenderer(_Renderer);
 	SDL_DestroyWindow(_Window);
     _Window = nullptr;

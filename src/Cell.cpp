@@ -81,7 +81,6 @@ void Cell::GetFlag(SDL_Renderer* _Renderer){
         SDL_FreeSurface(SurfaceImage);
         SetTexture(TextureImage);
     }
-    //ChangeColorTo({255, 0, 0, 255});
 }
 
 Cell::~Cell(){

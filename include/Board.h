@@ -27,7 +27,7 @@ class Board{
 public:
     Board(SDL_Renderer *renderer, const GameDifficulty &GameDifficulty);
     int GetIndex(const int row, const int col);
-    void RenderBoard(SDL_Renderer *renderer);
+    void RenderBoard(SDL_Renderer *renderer, HUD& HUD);
     void HandleMouseClick(const SDL_Event &event, HUD& HUD);
     void HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int xMouse, const int yMouse, HUD& Hud);
     ~Board();
@@ -37,6 +37,7 @@ private:
     int _Cols;
     int _Bombs;
     int _MaxCellsIndex;
+    int _CellsToOpen;
     SDL_Renderer *_Renderer;
 
     std::vector<int> BombsIndexList;
@@ -55,5 +56,8 @@ private:
     void ExpandFrom(Cell& FromThisCell, HUD& Hud);
     bool InsideIndexRange(const int Row, const int Col);
     void ShowAllBombs();
+
+public:
+    inline int GetRemainingCellsToOpen() const {return _CellsToOpen;}
 };
 

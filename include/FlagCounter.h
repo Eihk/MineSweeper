@@ -4,9 +4,6 @@
 #include <SDL_ttf.h>
 #include <string>
 
-#include <iostream>
-
-
 class FlagCounter{
 public:
     FlagCounter(const int MaxBombs, SDL_Rect Rect);
