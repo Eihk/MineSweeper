@@ -86,7 +86,12 @@ void Cell::GetFlag(SDL_Renderer* _Renderer){
 Cell::~Cell(){
     for(auto& Texture: TextureOfNumbers){
         SDL_DestroyTexture(Texture);
+        Texture = nullptr;
     }
     SDL_DestroyTexture(FlagTexture);
     SDL_DestroyTexture(BombTexture);
+    FlagTexture = nullptr;
+    BombTexture = nullptr;
+
+
 }

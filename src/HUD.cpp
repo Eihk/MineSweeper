@@ -63,7 +63,8 @@ void HUD::HandleMouseClick(const SDL_Event& event, const std::function<void()>& 
 }
 
 HUD::~HUD(){
-    _FlagCounter = nullptr;
     _FlagCounter->~FlagCounter();
     _TimerCounter->~TimerCounter();
+    _FlagCounter = nullptr;
+    _TimerCounter = nullptr;
 }
