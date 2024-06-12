@@ -93,5 +93,5 @@ Cell::~Cell(){
     FlagTexture = nullptr;
     BombTexture = nullptr;
 
-
+    
 }

@@ -65,12 +65,18 @@ void MineSweeper::BoardScreen(){
     Board _Board = Board(_Renderer, _GameDifficulty);
     HUD _HUD = HUD(BoardScreenWidth, _GameDifficulty.Bombs);
 
+    _HUD.SetReturnButtonTexture(_Renderer);
+
     SDL_SetWindowSize(_Window, BoardScreenWidth, BoardScreenHeight);
     SDL_SetWindowPosition(_Window, SDL_WINDOWPOS_CENTERED,
     SDL_WINDOWPOS_CENTERED);
 
     auto HandleReset = [&](){
         GameState = EGameState::EGS_Reset;
+    };
+
+    auto HandleReturnMenu = [&](){
+        GameState = EGameState::EGS_Menu;
     };
 
     while(GameState == EGameState::EGS_Board){
@@ -81,7 +87,7 @@ void MineSweeper::BoardScreen(){
 			}
             if(event.type == SDL_MOUSEBUTTONDOWN){
                 _Board.HandleMouseClick(event, _HUD);
-                _HUD.HandleMouseClick(event, HandleReset);
+                _HUD.HandleMouseClick(event, HandleReset, HandleReturnMenu);
             }
 			if (event.type == SDL_WINDOWEVENT
 				&& event.window.event == SDL_WINDOWEVENT_CLOSE

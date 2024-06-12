@@ -10,13 +10,19 @@ HUD::HUD(const int BoardScreenWidth, const  int MaxBombs){
     _TimerCounter = new TimerCounter(TimerRect);
 
     /* Reset Button*/
-    SDL_Rect ResetButtonRect = {BoardScreenWidth/2 - 16, (yHud - 32)/2, 32, 32};
-    SDL_Color ButtonColor = {255, 255, 255, 255};
+    SDL_Rect ResetButtonRect = {BoardScreenWidth/2 - 16, (yHud - 32)/2  + 15 , 32, 32};
+    SDL_Color ButtonColor = {0, 0, 0, 0};
     _ResetButton = Button(ResetButtonRect, ButtonColor);
+
+    /* Return To Menu Button*/
+    SDL_Rect ReturnToMenuButtonRect = {BoardScreenWidth/2 - 16, 2, 32, 32};
+    SDL_Color ReturnToMenuButtonColor = {0, 0, 0, 0};
+    _ReturnToMenuButton = Button(ReturnToMenuButtonRect, ReturnToMenuButtonColor);
 }
 
 void HUD::Render(SDL_Renderer* Renderer){
     _ResetButton.Render(Renderer);
+    _ReturnToMenuButton.Render(Renderer);
     _FlagCounter->Render(Renderer);
     _TimerCounter->Render(Renderer);
 }
@@ -51,13 +57,29 @@ void HUD::SetButtonPlayingTexture(SDL_Renderer* Renderer){
     }
 }
 
-void HUD::HandleMouseClick(const SDL_Event& event, const std::function<void()>& HandleReset){
+void HUD::SetReturnButtonTexture(SDL_Renderer* Renderer){
+    const int FontSize = 30;
+    TTF_Font* FontType = TTF_OpenFont("assets/Octin_Sports_Free.ttf", FontSize);
+
+    std::string Text = "MENU";
+    const char* SignChar = Text.c_str();
+
+    SDL_Surface* MenuSurfaceMessage = TTF_RenderText_Solid(FontType, SignChar, {255, 150, 0, 255});
+    SDL_Texture* MenuTextureMessage = SDL_CreateTextureFromSurface(Renderer, MenuSurfaceMessage);
+
+   _ReturnToMenuButton.SetTexture(MenuTextureMessage);
+}
+
+void HUD::HandleMouseClick(const SDL_Event& event, const std::function<void()>& HandleReset, const std::function<void()>& HandleReturnMenu){
     int xMouse, yMouse;
     SDL_GetMouseState(&xMouse, &yMouse);
 
     if (event.button.button == SDL_BUTTON_LEFT){
         if(_ResetButton.IsMouseInside(xMouse, yMouse)){
             HandleReset();
+        }
+        if(_ReturnToMenuButton.IsMouseInside(xMouse, yMouse)){
+            HandleReturnMenu();
         }
     }
 }

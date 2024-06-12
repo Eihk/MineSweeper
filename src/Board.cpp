@@ -266,7 +266,6 @@ void Board::ShowAllBombs(){
 }
 
 Board::~Board(){
-    SDL_DestroyRenderer(_Renderer);
     _Renderer = nullptr;
     _Map = nullptr;
     delete[] _Map;

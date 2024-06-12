@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #include "FlagCounter.h"
 #include "TimerCount.h"
@@ -24,16 +25,17 @@ public:
     void SetButtonLostTexture(SDL_Renderer* Renderer);
     void SetButtonWinTexture(SDL_Renderer* Renderer);
     void SetButtonPlayingTexture(SDL_Renderer* Renderer);
-    void HandleMouseClick(const SDL_Event &event, const std::function<void()>& HandleReset);
+    void SetReturnButtonTexture(SDL_Renderer* Renderer);
 
+    void HandleMouseClick(const SDL_Event &event, const std::function<void()>& HandleReset, const std::function<void()>& HandleReturnMenu);
 
     ~HUD();
 private:
     Button _ResetButton;
+    Button _ReturnToMenuButton;
     FlagCounter* _FlagCounter;
     TimerCounter* _TimerCounter;
 
-    const int Value = 0;
 
     friend class Board;
 };
