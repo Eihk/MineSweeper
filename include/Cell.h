@@ -55,6 +55,8 @@ public:
 private:
 
     bool _IsFlagged = false;
+    const char* NumberText;
+    SDL_Color TextColor;
 
     ECellType _CellType = ECellType::ECT_Nothing;
     ECellState _CellState = ECellState::ECS_Closed;

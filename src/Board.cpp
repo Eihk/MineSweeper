@@ -196,7 +196,8 @@ void Board::HandleCellClick(Cell &CurrentCell, const SDL_Event &event, const int
                 ExpandFrom(CurrentCell, Hud);
                 if(_CellsToOpen == 0){
                     BoardState = EBoardState::EBS_Win;
-                }  
+                    Hud._TimerCounter->StopTimer();
+                }
             }
         }
         if (event.button.button == SDL_BUTTON_RIGHT){
@@ -216,13 +217,14 @@ void Board::ExpandFrom(Cell& ThisCell, HUD& Hud){
     if(ThisCell.IsCellOpen()) return;
 
     ThisCell.OpenCell(_Renderer);
-    ThisCell.Render(_Renderer);
     _CellsToOpen--;
 
     if (ThisCell.IsFlagged()){
         ThisCell.RemoveFlag();
         Hud._FlagCounter->IncrementCounter();
     }
+
+    ThisCell.Render(_Renderer);
     
     if(ThisCell.IsCellNumber()) return;
     if(ThisCell.IsCellNothing()){

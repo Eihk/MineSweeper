@@ -23,8 +23,12 @@ void Cell::ChangeCellType(ECellType NewType){
 }
 
 void Cell::OpenCell(SDL_Renderer* _Renderer){
-    if(TextureMessage != nullptr){
+    _CellState = ECellState::ECS_Opened;
+    ChangeColorTo(PressedColor);
+    if(IsCellNumber()){
+        SDL_RenderCopy(_Renderer, TextureMessage, NULL, &GetRect());
         SetTexture(TextureMessage);
+        return;
     }
     if(IsCellBomb()){
         SDL_Surface* SurfaceImage = SDL_LoadBMP(BombFilePath);
@@ -34,20 +38,18 @@ void Cell::OpenCell(SDL_Renderer* _Renderer){
             SetTexture(TextureImage);
         }
         ChangeColorTo({255, 0, 0, 255});
-    } else{
-        ChangeColorTo(PressedColor);
-    }
-    _CellState = ECellState::ECS_Opened;
+    } 
 }
 
 void Cell::AddNumber(SDL_Renderer* _Renderer, const char* Text, SDL_Color Color){
+    NumberText = Text;
+    TextColor = Color;
+
     const int FontSize = 30;
     TTF_Font* FontType = TTF_OpenFont("assets/Octin_Sports_Free.ttf", FontSize);
 
-    SDL_Surface* SurfaceMessage = TTF_RenderText_Solid(FontType, Text, Color);
+    SDL_Surface* SurfaceMessage = TTF_RenderText_Solid(FontType, NumberText, TextColor);
     TextureMessage = SDL_CreateTextureFromSurface(_Renderer, SurfaceMessage);
-
-    SDL_RenderCopy(_Renderer, TextureMessage, NULL, &GetRect());
     TTF_CloseFont(FontType);
 }
 

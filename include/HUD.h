@@ -15,7 +15,7 @@
 
 #define LostEmojiPath "assets/LostEmoji.bmp"
 #define PlayingEmojiPath "assets/StartingEmoji.bmp"
-#define WinEmojiPath "assets/AmostEmoji.bmp"
+#define WinEmojiPath "assets/AlmostEmoji.bmp"
 
 class HUD{
 public:
