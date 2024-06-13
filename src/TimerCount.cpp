@@ -77,8 +77,6 @@ void TimerCounter::Render(SDL_Renderer* Renderer){
     SDL_RenderCopy(Renderer, ThirdTextureMessage, NULL, &_ThirdNumberRect);
 
     TTF_CloseFont(FontType);
-
-
 }
 
 TimerCounter::~TimerCounter(){

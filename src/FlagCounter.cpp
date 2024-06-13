@@ -58,10 +58,6 @@ void FlagCounter::Render(SDL_Renderer* Renderer) const{
     TTF_CloseFont(FontType);
 }
 
-void FlagCounter::Update(){
-
-}
-
 FlagCounter::~FlagCounter(){
 
 }

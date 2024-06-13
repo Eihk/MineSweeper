@@ -11,7 +11,6 @@ DifficultyButton::DifficultyButton(SDL_Renderer* Renderer, SDL_Rect& Rect, SDL_C
     SDL_Surface* SurfaceMessage = TTF_RenderText_Solid(FontType, Text, FontColor);
     SDL_Texture* TextureMessage = SDL_CreateTextureFromSurface(Renderer, SurfaceMessage);
 
-    //SDL_RenderCopy(Renderer, TextureMessage, NULL, &GetRect());
     SetTexture(TextureMessage);
     TTF_CloseFont(FontType);
 }
