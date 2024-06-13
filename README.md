@@ -4,6 +4,18 @@ Recreation of the popular game MineSweeper Using SDL2 and C++.
 
 ![Menu](resources/Menu.png)
 
+Game Screen
+
+![GameScreen](resources/GameScreen.png)
+
+Lost Screen
+
+![LostScreen](resources/LostScreen.png)
+
+Win SCreen
+
+![WinScreen](resources/WinScreen.png)
+
 ## Features
 - Selection of three difficulty levels (Easy, Medium, Expert)
 - Flags and and timer
