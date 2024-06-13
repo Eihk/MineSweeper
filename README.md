@@ -1,6 +1,8 @@
 # MineSweeper
 
-Recreation of the popular game MineSweeper Using SDL2 and C++.
+Recreation of the popular game MineSweeper using SDL2 and C++.
+
+Menu Screen
 
 ![Menu](resources/Menu.png)
 
@@ -12,7 +14,7 @@ Lost Screen
 
 ![LostScreen](resources/LostScreen.png)
 
-Win SCreen
+Win Screen
 
 ![WinScreen](resources/WinScreen.png)
 
