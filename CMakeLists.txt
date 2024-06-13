@@ -3,16 +3,10 @@
 project(MineSweeper)
 set(CMAKE_CXX_STANDARD 11)
 
-# TODO: Add tests and install targets if needed.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 set(BIN_DIR ${MineSweeper_SOURCE_DIR}/bin)
 
-# This path is used by FindSDL2 module. 
-# It will find include and lib folders under this directory.
-# This is because find command doesn't include any path for Windows.
-# So it can't find anything using default paths.
-# SDL2_PATH is already expected in module file. I'm using the same variable.
 IF (WIN32)
   set(SDL2_PATH "E:/Project/Library/SDL2-2.30.3")
   set(SDL2_ttf_PATH "E:/Project/Library/SDL2_ttf-2.22.0")
@@ -34,7 +28,6 @@ target_link_libraries(MineSweeper
 	${SDL2_ttf_LIBRARY}
 )
 
-# Copy Assets to the Build Directory
 add_custom_command(
 	TARGET MineSweeper POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
